@@ -8,9 +8,8 @@ const contactRoutes= require('./routes/contactRoutes.js');
 dotenv.config();
 const app = express();
 
-app.use(cors({
-  origin: 'https://site-vitrine-iota.vercel.app'
-}));
+app.use(cors());
+
 app.use(express.json());
 
 app.use('/api/testimonials', testimonialRoutes);
