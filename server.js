@@ -8,15 +8,26 @@ const contactRoutes= require('./routes/contactRoutes.js');
 dotenv.config();
 const app = express();
 
-app.use(cors({
+const corsOptions = {
   origin: "https://site-vitrine-iota.vercel.app",
-  methods: ["GET", "POST", "PUT", "DELETE"],
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true
-}));
+};
 
-// ✅ gérer les requêtes préflight correctement
-app.options("/api/*", cors());
+app.use(cors(corsOptions));
+
+// ✅ Gérer les requêtes préflight manuellement
+app.use((req, res, next) => {
+  if (req.method === "OPTIONS") {
+    res.header("Access-Control-Allow-Origin", corsOptions.origin);
+    res.header("Access-Control-Allow-Methods", corsOptions.methods.join(","));
+    res.header("Access-Control-Allow-Headers", corsOptions.allowedHeaders.join(","));
+    res.header("Access-Control-Allow-Credentials", "true");
+    return res.sendStatus(200);
+  }
+  next();
+});
 
 app.use(express.json());
 
