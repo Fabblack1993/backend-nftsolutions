@@ -9,9 +9,12 @@ dotenv.config();
 const app = express();
 
 app.use(cors({
-  origin: "https://site-vitrine-iota.vercel.app", // ← ton frontend Vercel
+  origin: "https://site-vitrine-iota.vercel.app",
+  methods: ["GET", "POST", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true
 }));
+app.options("*", cors());
 
 app.use(express.json());
 
