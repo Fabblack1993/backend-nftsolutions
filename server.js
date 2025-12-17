@@ -8,7 +8,10 @@ const contactRoutes= require('./routes/contactRoutes.js');
 dotenv.config();
 const app = express();
 
-app.use(cors());
+app.use(cors({
+  origin: "https://site-vitrine-iota.vercel.app", // ← ton frontend Vercel
+  credentials: true
+}));
 
 app.use(express.json());
 
