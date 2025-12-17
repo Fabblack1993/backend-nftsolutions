@@ -10,11 +10,13 @@ const app = express();
 
 app.use(cors({
   origin: "https://site-vitrine-iota.vercel.app",
-  methods: ["GET", "POST", "DELETE", "OPTIONS"],
+  methods: ["GET", "POST", "PUT", "DELETE"],
   allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true
 }));
-app.options("*", cors());
+
+// ✅ gérer les requêtes préflight correctement
+app.options("/api/*", cors());
 
 app.use(express.json());
 
