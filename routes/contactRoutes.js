@@ -5,9 +5,13 @@ const nodemailer = require("nodemailer");
 router.post("/", async (req, res) => {
   const { name, email, message } = req.body;
 
+  console.log("📩 Données reçues:", { name, email, message });
+
   try {
     const transporter = nodemailer.createTransport({
-      service: "gmail",
+      host: "smtp.gmail.com",
+      port: 465,
+      secure: true,
       auth: {
         user: process.env.MAIL_USER,
         pass: process.env.MAIL_PASS,
@@ -15,16 +19,21 @@ router.post("/", async (req, res) => {
     });
 
     await transporter.sendMail({
-      from: email,
+      from: `"${name}" <${process.env.MAIL_USER}>`, // ✅ Gmail-friendly
       to: process.env.MAIL_USER,
+      replyTo: email, // ✅ Permet de répondre au visiteur
       subject: `📩 Nouveau message de ${name}`,
-      text: message,
+      text: `Email: ${email}\n\nMessage:\n${message}`,
     });
 
-    res.json({ success: true, message: "Message envoyé avec succès" });
+    console.log("✅ Email envoyé avec succès");
+    res.status(200).json({ success: true, message: "Message envoyé avec succès" });
   } catch (error) {
-    console.error("❌ Erreur envoi mail :", error);
-    res.status(500).json({ success: false, error: error.message });
+    console.error("❌ Erreur SMTP:", error.response || error);
+    res.status(500).json({
+      success: false,
+      error: "Erreur lors de l'envoi du message. Vérifiez la configuration SMTP ou les identifiants Gmail.",
+    });
   }
 });
 
